@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encode/Decode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hasil {
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .salin-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .salin-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🔐 Base64 Encoder / Decoder</h2>
+
+    <textarea id="inputText" rows="4" placeholder="Masukkan teks atau base64 di sini..."></textarea>
+
+    <button onclick="encodeBase64()">🔼 Encode ke Base64</button>
+    <button onclick="decodeBase64()">🔽 Decode dari Base64</button>
+
+    <h3>🔎 Hasil:</h3>
+    <div class="hasil" id="output">
+        <button class="salin-btn" onclick="salinHasil()">Salin</button>
+        <div id="outputText">(hasil akan muncul di sini)</div>
+    </div>
+</div>
+
+<script>
+function encodeBase64() {
+    const input = document.getElementById("inputText").value;
+    try {
+        const encoded = btoa(unescape(encodeURIComponent(input)));
+        document.getElementById("outputText").innerText = encoded;
+    } catch (e) {
+        document.getElementById("outputText").innerText = "❌ Gagal encode.";
+    }
+}
+
+function decodeBase64() {
+    const input = document.getElementById("inputText").value;
+    try {
+        const decoded = decodeURIComponent(escape(atob(input)));
+        document.getElementById("outputText").innerText = decoded;
+    } catch (e) {
+        document.getElementById("outputText").innerText = "❌ Gagal decode. Pastikan input benar.";
+    }
+}
+
+function salinHasil() {
+    const text = document.getElementById("outputText").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("📋 Hasil berhasil disalin!");
+    }).catch(err => {
+        alert("❌ Gagal menyalin.");
+    });
+}
+</script>
+</body>
+</html>
