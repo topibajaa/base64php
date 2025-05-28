@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cek ID Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    select, input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    .result {
+      margin-top: 20px;
+      background: #f1f5f9;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 15px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎮 Cek ID Game</h2>
+    <form id="checkForm">
+      <label for="game">Pilih Game:</label>
+      <select id="game" required>
+        <option value="">-- Pilih Game --</option>
+        <option value="mobile-legends">Mobile Legends</option>
+        <option value="free-fire">Free Fire</option>
+        <option value="pubg-mobile">PUBG Mobile</option>
+        <option value="higgs-domino">Higgs Domino</option>
+        <!-- Tambahkan sesuai isi ApiCheckGames.py -->
+      </select>
+
+      <label for="userid">Masukkan ID:</label>
+      <input type="text" id="userid" placeholder="Masukkan ID user..." required>
+
+      <button type="submit">Cek Sekarang</button>
+    </form>
+
+    <div id="result" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    document.getElementById("checkForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const game = document.getElementById("game").value;
+      const userid = document.getElementById("userid").value;
+      const resultBox = document.getElementById("result");
+
+      resultBox.style.display = "block";
+      resultBox.innerText = "⏳ Mengecek...";
+
+      fetch("api-check.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ game, userid })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          resultBox.innerHTML = `✅ Nickname: <strong>${data.nickname}</strong>`;
+        } else {
+          resultBox.innerHTML = `❌ ${data.message || "ID tidak ditemukan."}`;
+        }
+      })
+      .catch(err => {
+        resultBox.innerHTML = "❌ Gagal terhubung ke server.";
+      });
+    });
+  </script>
+</body>
+</html>
