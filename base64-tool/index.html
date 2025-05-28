@@ -2,107 +2,119 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 Encode/Decode</title>
+    <title>Base64 Encoder & Decoder</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            padding: 20px;
+            font-family: sans-serif;
+            background: #f3f4f6;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
         }
         .container {
-            max-width: 700px;
-            margin: auto;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 12px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        textarea, input, button {
             width: 100%;
+            max-width: 700px;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
             padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
+            margin-top: 10px;
+            font-size: 14px;
+            font-family: monospace;
+            resize: vertical;
         }
         button {
-            background-color: #4CAF50;
+            padding: 10px 20px;
+            margin: 10px 5px 20px 0;
+            background: #2563eb;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 6px;
         }
         button:hover {
-            background-color: #45a049;
+            background: #1e40af;
         }
-        .hasil {
-            background: #f9f9f9;
-            border: 1px dashed #ccc;
-            padding: 10px;
-            word-wrap: break-word;
+        .output {
             position: relative;
+            margin-top: 20px;
         }
-        .salin-btn {
+        .copy-btn {
             position: absolute;
-            top: 10px;
             right: 10px;
-            background: #007bff;
-            color: white;
+            top: 5px;
+            background: #10b981;
             border: none;
-            padding: 5px 10px;
+            padding: 6px 12px;
+            color: white;
             font-size: 12px;
             cursor: pointer;
-            border-radius: 4px;
-        }
-        .salin-btn:hover {
-            background: #0056b3;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>🔐 Base64 Encoder / Decoder</h2>
+    <h2>🧬 Base64 Encode & Decode</h2>
+    
+    <label>Masukkan Teks:</label>
+    <textarea id="inputText" placeholder="Masukkan teks atau base64 di sini..."></textarea>
+    
+    <br>
+    <button onclick="encode()">🔐 Encode</button>
+    <button onclick="decode()">🔓 Decode</button>
 
-    <textarea id="inputText" rows="4" placeholder="Masukkan teks atau base64 di sini..."></textarea>
+    <div class="output" id="encodeOutput" style="display:none;">
+        <label>Hasil Encode:</label>
+        <textarea id="encodedResult" readonly></textarea>
+        <button class="copy-btn" onclick="copyToClipboard('encodedResult')">Salin</button>
+    </div>
 
-    <button onclick="encodeBase64()">🔼 Encode ke Base64</button>
-    <button onclick="decodeBase64()">🔽 Decode dari Base64</button>
-
-    <h3>🔎 Hasil:</h3>
-    <div class="hasil" id="output">
-        <button class="salin-btn" onclick="salinHasil()">Salin</button>
-        <div id="outputText">(hasil akan muncul di sini)</div>
+    <div class="output" id="decodeOutput" style="display:none;">
+        <label>Hasil Decode:</label>
+        <textarea id="decodedResult" readonly></textarea>
+        <button class="copy-btn" onclick="copyToClipboard('decodedResult')">Salin</button>
     </div>
 </div>
 
 <script>
-function encodeBase64() {
+function encode() {
     const input = document.getElementById("inputText").value;
     try {
         const encoded = btoa(unescape(encodeURIComponent(input)));
-        document.getElementById("outputText").innerText = encoded;
+        document.getElementById("encodedResult").value = encoded;
+        document.getElementById("encodeOutput").style.display = "block";
+        document.getElementById("decodeOutput").style.display = "none";
     } catch (e) {
-        document.getElementById("outputText").innerText = "❌ Gagal encode.";
+        alert("Gagal encode: " + e.message);
     }
 }
 
-function decodeBase64() {
+function decode() {
     const input = document.getElementById("inputText").value;
     try {
         const decoded = decodeURIComponent(escape(atob(input)));
-        document.getElementById("outputText").innerText = decoded;
+        document.getElementById("decodedResult").value = decoded;
+        document.getElementById("decodeOutput").style.display = "block";
+        document.getElementById("encodeOutput").style.display = "none";
     } catch (e) {
-        document.getElementById("outputText").innerText = "❌ Gagal decode. Pastikan input benar.";
+        document.getElementById("decodedResult").value = "❌ Base64 tidak valid.";
+        document.getElementById("decodeOutput").style.display = "block";
+        document.getElementById("encodeOutput").style.display = "none";
     }
 }
 
-function salinHasil() {
-    const text = document.getElementById("outputText").innerText;
-    navigator.clipboard.writeText(text).then(() => {
-        alert("📋 Hasil berhasil disalin!");
-    }).catch(err => {
-        alert("❌ Gagal menyalin.");
-    });
+function copyToClipboard(id) {
+    const el = document.getElementById(id);
+    el.select();
+    el.setSelectionRange(0, 99999); // for mobile
+    document.execCommand("copy");
+    alert("📋 Teks berhasil disalin!");
 }
 </script>
 </body>
